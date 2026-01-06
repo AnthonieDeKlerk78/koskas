@@ -24,6 +24,10 @@
   border: 2px solid #F5F5F5;
 }
 
+.border-3 {
+  border-width: 3px;
+}
+
 /* Touch feedback */
 @media (hover: none) {
   .touch-highlight {

@@ -6,12 +6,51 @@ export const MobileHeader = ({ title }) => {
 
   return (
     <header className="sticky top-0 z-40 bg-chalkboard-black/95 backdrop-blur-sm safe-top">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-dashed border-chalk-faded/30">
-        <h1 className="font-chalk text-2xl text-chalk-white chalk-text">
-          {title}
-        </h1>
+      {/* Decorative top border with dots */}
+      <div className="border-t-4 border-b-2 border-chalk-white/80 relative">
+        <div className="absolute inset-0 flex justify-around items-center">
+          {[...Array(20)].map((_, i) => (
+            <div key={i} className="w-1 h-1 bg-chalk-white/60 rounded-full" />
+          ))}
+        </div>
+      </div>
+
+      {/* Main header with decorative banner style */}
+      <div className="px-4 py-6 border-b-2 border-chalk-white/80 relative">
+        {/* Inner decorative frame */}
+        <div className="border-2 border-chalk-white/70 rounded-sm p-4 relative">
+          {/* Title banner with decorative flourishes */}
+          <div className="text-center mb-2">
+            <div className="relative inline-block">
+              {/* Decorative left flourish */}
+              <svg className="absolute -left-12 top-1/2 -translate-y-1/2 w-10 h-10 text-chalk-white/60" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5,20 Q10,10 15,20 T25,20" strokeLinecap="round"/>
+                <path d="M8,25 Q12,20 16,25" strokeLinecap="round"/>
+              </svg>
+
+              <h1 className="font-chalk text-5xl text-chalk-white chalk-text inline-block transform -rotate-1">
+                {title}
+              </h1>
+
+              {/* Decorative right flourish */}
+              <svg className="absolute -right-12 top-1/2 -translate-y-1/2 w-10 h-10 text-chalk-white/60" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M15,20 Q20,10 25,20 T35,20" strokeLinecap="round"/>
+                <path d="M24,25 Q28,20 32,25" strokeLinecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          {/* Underline decoration */}
+          <div className="flex justify-center items-center gap-2 mt-2">
+            <div className="h-0.5 w-16 bg-chalk-white/40"></div>
+            <div className="w-2 h-2 bg-chalk-white/40 rotate-45"></div>
+            <div className="h-0.5 w-16 bg-chalk-white/40"></div>
+          </div>
+        </div>
+
+        {/* User profile in corner */}
         {user && (
-          <div className="flex items-center gap-2">
+          <div className="absolute top-2 right-2 flex items-center gap-2">
             {user.user_metadata?.avatar_url && (
               <img
                 src={user.user_metadata.avatar_url}
@@ -23,6 +62,9 @@ export const MobileHeader = ({ title }) => {
           </div>
         )}
       </div>
+
+      {/* Bottom decorative border */}
+      <div className="border-b-4 border-chalk-white/80"></div>
     </header>
   )
 }
