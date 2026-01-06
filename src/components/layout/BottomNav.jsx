@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Home, Clock, ChefHat, Settings } from 'lucide-react'
+import { Home, Clock, ChefHat, Heart } from 'lucide-react'
 
 export const BottomNav = ({ activeTab }) => {
   const navigate = useNavigate()
@@ -9,12 +9,13 @@ export const BottomNav = ({ activeTab }) => {
     { id: 'home', icon: Home, label: 'pantry', path: '/dashboard' },
     { id: 'expiring', icon: Clock, label: 'expiring', path: '/dashboard?tab=expiring' },
     { id: 'recipes', icon: ChefHat, label: 'recipes', path: '/recipes' },
-    { id: 'more', icon: Settings, label: 'more', path: '/settings' },
+    { id: 'saved', icon: Heart, label: 'saved', path: '/saved' },
   ]
 
   const getCurrentTab = () => {
     if (activeTab) return activeTab
     if (location.pathname === '/recipes') return 'recipes'
+    if (location.pathname === '/saved') return 'saved'
     if (location.pathname === '/settings') return 'more'
     if (location.search.includes('tab=expiring')) return 'expiring'
     return 'home'

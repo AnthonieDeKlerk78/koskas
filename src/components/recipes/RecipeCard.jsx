@@ -1,6 +1,21 @@
 import { Clock, Users, Check, X } from 'lucide-react'
+import { SaveButton } from './SaveButton'
+import { useSavedRecipes } from '../../hooks/useSavedRecipes'
+import { getRecipeDetails } from '../../lib/spoonacular'
 
 export const RecipeCard = ({ recipe, onClick }) => {
+  const { saveRecipe, unsaveRecipe, isRecipeSaved } = useSavedRecipes()
+
+  const handleSaveRecipe = async (recipe) => {
+    // Search results don't have full data - fetch it first
+    if (!recipe.extendedIngredients) {
+      const fullRecipe = await getRecipeDetails(recipe.id)
+      await saveRecipe(fullRecipe)
+    } else {
+      await saveRecipe(recipe)
+    }
+  }
+
   const usedCount = recipe.usedIngredientCount || 0
   const missedCount = recipe.missedIngredientCount || 0
   const totalNeeded = usedCount + missedCount
@@ -25,6 +40,16 @@ export const RecipeCard = ({ recipe, onClick }) => {
             <span className="text-4xl">🍽️</span>
           </div>
         )}
+        {/* Save button - top-left corner */}
+        <div className="absolute top-2 left-2">
+          <SaveButton
+            recipeId={recipe.id}
+            isSaved={isRecipeSaved(recipe.id)}
+            onSave={() => handleSaveRecipe(recipe)}
+            onUnsave={unsaveRecipe}
+            size="small"
+          />
+        </div>
         {/* Ingredient match badge */}
         <div className="absolute top-2 right-2 bg-chalkboard-black/80 px-2 py-1 rounded">
           <span className="font-hand text-xs text-chalk-green">

@@ -1,7 +1,11 @@
 import { X, Clock, Users, ExternalLink } from 'lucide-react'
 import { ChalkButton } from '../ui/ChalkButton'
+import { SaveButton } from './SaveButton'
+import { useSavedRecipes } from '../../hooks/useSavedRecipes'
 
 export const RecipeDetail = ({ recipe, onClose }) => {
+  const { saveRecipe, unsaveRecipe, isRecipeSaved } = useSavedRecipes()
+
   if (!recipe) return null
 
   return (
@@ -12,12 +16,21 @@ export const RecipeDetail = ({ recipe, onClose }) => {
           <h2 className="font-chalk text-xl text-chalk-white chalk-text truncate pr-4">
             {recipe.title}
           </h2>
-          <button
-            onClick={onClose}
-            className="p-2 text-chalk-faded hover:text-chalk-white transition-colors"
-          >
-            <X size={24} />
-          </button>
+          <div className="flex items-center gap-2">
+            <SaveButton
+              recipeId={recipe.id}
+              isSaved={isRecipeSaved(recipe.id)}
+              onSave={() => saveRecipe(recipe)}
+              onUnsave={unsaveRecipe}
+              size="default"
+            />
+            <button
+              onClick={onClose}
+              className="p-2 text-chalk-faded hover:text-chalk-white transition-colors"
+            >
+              <X size={24} />
+            </button>
+          </div>
         </div>
       </div>
 

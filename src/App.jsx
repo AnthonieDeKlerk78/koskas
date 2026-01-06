@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { Recipes } from './pages/Recipes'
+import { SavedRecipes } from './pages/SavedRecipes'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 
 function App() {
@@ -21,6 +22,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Recipes />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/saved"
+        element={
+          <ProtectedRoute>
+            <SavedRecipes />
           </ProtectedRoute>
         }
       />
