@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mcp list-tools:*)",
+      "Bash(node scripts/run-migration.js:*)"
+    ]
+  }
+}
