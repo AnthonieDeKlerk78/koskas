@@ -11,6 +11,7 @@ import { IngredientList } from '../components/ingredients/IngredientList'
 import { IngredientForm } from '../components/ingredients/IngredientForm'
 import { getDaysUntilExpiration } from '../utils/helpers'
 import { debounce } from '../utils/helpers'
+import { CATEGORIES } from '../utils/constants'
 
 export const Dashboard = () => {
   const {
@@ -63,9 +64,20 @@ export const Dashboard = () => {
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
-      filtered = filtered.filter((ing) =>
-        ing.name.toLowerCase().includes(query)
+
+      // Check if the query matches any category
+      const matchedCategory = CATEGORIES.find(cat =>
+        cat.name.toLowerCase().includes(query)
       )
+
+      filtered = filtered.filter((ing) => {
+        const name = (ing.name || '').toLowerCase()
+        const ingredientMatches = name.includes(query)
+        const categoryMatches = matchedCategory && ing.category === matchedCategory.name
+
+        // Show ingredient if either the name matches OR it's in the matched category
+        return ingredientMatches || categoryMatches
+      })
     }
 
     return filtered
@@ -117,46 +129,63 @@ export const Dashboard = () => {
   return (
     <ChalkboardFrame>
       <div className="flex flex-col min-h-screen pb-20">
-        <MobileHeader title="My Pantry" />
+        <MobileHeader />
 
         <main className="flex-1 px-4 py-4">
-          {/* Search bar */}
-          <div className="relative mb-4">
-            <Search
-              size={20}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-chalk-faded"
-            />
-            <input
-              type="text"
-              placeholder="search ingredients..."
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full bg-transparent chalk-border rounded-lg
-                         text-chalk-white font-hand py-3 pl-10 pr-4
-                         placeholder:text-chalk-faded/50
-                         focus:outline-none focus:border-solid"
-            />
+          {/* Search bar with decorative frame */}
+          <div className="relative mb-6">
+            <div className="border-2 border-chalk-white/60 rounded-lg p-2 bg-chalkboard-dark/30">
+              <div className="relative">
+                <Search
+                  size={20}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-chalk-faded/70"
+                />
+                <input
+                  type="text"
+                  placeholder="search ingredients..."
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="w-full bg-transparent border-2 border-dashed border-chalk-faded/40 rounded
+                             text-chalk-white font-hand py-3 pl-10 pr-4
+                             placeholder:text-chalk-faded/50
+                             focus:outline-none focus:border-chalk-white/60"
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Category chips */}
-          {activeTab === 'home' && (
-            <div className="mb-4">
-              <CategoryChips
-                selected={selectedCategory}
-                onSelect={setSelectedCategory}
-              />
-            </div>
+          {/* Category filter - only show if category is selected (not when searching) */}
+          {activeTab === 'home' && selectedCategory && !searchQuery && (
+            <>
+              <div className="mb-4">
+                <CategoryChips
+                  selected={selectedCategory}
+                  onSelect={setSelectedCategory}
+                />
+              </div>
+
+              {/* Decorative divider */}
+              <div className="relative mb-6 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t-2 border-dashed border-chalk-faded/30"></div>
+                </div>
+                <div className="relative flex gap-2 bg-chalkboard-black px-4">
+                  <div className="w-1.5 h-1.5 rounded-full bg-chalk-faded/40"></div>
+                  <div className="w-1 h-1 rounded-full bg-chalk-faded/30"></div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-chalk-faded/40"></div>
+                </div>
+              </div>
+            </>
           )}
 
-          {/* Divider */}
-          <div className="border-t border-dashed border-chalk-faded/30 mb-4" />
-
-          {/* Ingredient list */}
-          <IngredientList
-            ingredients={filteredIngredients}
-            loading={loading}
-            onEdit={handleEditClick}
-            onDelete={handleDeleteClick}
-          />
+          {/* Ingredient list in menu board style */}
+          <div className="space-y-4">
+            <IngredientList
+              ingredients={filteredIngredients}
+              loading={loading}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteClick}
+            />
+          </div>
         </main>
 
         {/* FAB */}

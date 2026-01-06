@@ -38,57 +38,80 @@ export const IngredientCard = ({ ingredient, onEdit, onDelete }) => {
   return (
     <div
       onClick={handleCardClick}
-      className="relative p-4 chalk-border rounded-lg bg-chalkboard-dark cursor-pointer
-                 hover:bg-chalkboard-dark/80 active:scale-[0.99] transition-all touch-highlight"
-      style={{ borderLeftWidth: '4px', borderLeftColor: categoryColor, borderLeftStyle: 'solid' }}
+      className="relative cursor-pointer hover:bg-chalkboard-dark/30 active:bg-chalkboard-dark/50 transition-all touch-highlight rounded py-2 px-3 group"
     >
-      <div className="flex justify-between items-start gap-2">
-        <div className="flex-1 min-w-0">
-          <h3 className="font-hand text-lg text-chalk-white truncate">
+      <div className="flex justify-between items-start gap-3">
+        {/* Left side: ingredient info in menu list style */}
+        <div className="flex-1 min-w-0 flex items-baseline gap-3">
+          {/* Ingredient name - handwritten style */}
+          <h3 className="font-hand text-lg text-chalk-white transform -rotate-0.5 relative">
             {ingredient.name}
+            {/* Subtle dot leader effect */}
+            <span className="absolute left-full ml-2 text-chalk-faded/30 text-xs">
+              ...........................
+            </span>
           </h3>
-          <p className="font-hand text-sm text-chalk-faded">
+
+          {/* Quantity - smaller text */}
+          <span className="font-hand text-sm text-chalk-faded/80 whitespace-nowrap ml-auto">
             {formatQuantity(ingredient.quantity)} {ingredient.unit}
-            {ingredient.location && ` · ${ingredient.location}`}
-          </p>
-          {expiration.label && (
-            <div className={`flex items-center gap-1 mt-1 ${getExpirationClass()}`}>
-              <Clock size={14} />
-              <span className="font-hand text-xs whitespace-nowrap">
-                {expiration.status === 'expired' || expiration.status === 'today' || expiration.status === 'tomorrow'
-                  ? expiration.label
-                  : `exp: ${expiration.label}`
-                }
-              </span>
-            </div>
-          )}
-          {ingredient.notes && (
-            <p className="mt-1 font-hand text-xs text-chalk-faded/70 truncate">
-              {ingredient.notes}
-            </p>
-          )}
+          </span>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        {/* Right side: Action buttons - hidden until hover */}
+        <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={handleEdit}
-            className="p-2 rounded-lg text-chalk-blue hover:bg-chalk-blue/20
+            className="p-1.5 rounded text-chalk-blue hover:bg-chalk-blue/20
                        active:scale-95 transition-all touch-highlight"
             title="Edit"
           >
-            <Pencil size={18} />
+            <Pencil size={14} />
           </button>
           <button
             onClick={handleDelete}
-            className="p-2 rounded-lg text-chalk-red hover:bg-chalk-red/20
+            className="p-1.5 rounded text-chalk-red hover:bg-chalk-red/20
                        active:scale-95 transition-all touch-highlight"
             title="Delete"
           >
-            <Trash2 size={18} />
+            <Trash2 size={14} />
           </button>
         </div>
       </div>
+
+      {/* Secondary info row - location, expiration, notes */}
+      <div className="mt-1 flex flex-wrap items-center gap-3 text-xs font-hand">
+        {/* Location */}
+        {ingredient.location && (
+          <span className="text-chalk-faded/70">
+            {ingredient.location}
+          </span>
+        )}
+
+        {/* Expiration */}
+        {expiration.label && (
+          <span className={`flex items-center gap-1 ${getExpirationClass()}`}>
+            <Clock size={10} />
+            {expiration.status === 'expired' || expiration.status === 'today' || expiration.status === 'tomorrow'
+              ? expiration.label
+              : `exp: ${expiration.label}`
+            }
+          </span>
+        )}
+
+        {/* Notes */}
+        {ingredient.notes && (
+          <span className="text-chalk-faded/60 italic">
+            "{ingredient.notes}"
+          </span>
+        )}
+      </div>
+
+      {/* Bottom border line */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px opacity-30"
+        style={{ backgroundColor: categoryColor }}
+      ></div>
     </div>
   )
 }
