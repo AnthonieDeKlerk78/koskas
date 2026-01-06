@@ -11,6 +11,7 @@ import { IngredientList } from '../components/ingredients/IngredientList'
 import { IngredientForm } from '../components/ingredients/IngredientForm'
 import { getDaysUntilExpiration } from '../utils/helpers'
 import { debounce } from '../utils/helpers'
+import { CATEGORIES } from '../utils/constants'
 
 export const Dashboard = () => {
   const {
@@ -63,9 +64,20 @@ export const Dashboard = () => {
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
-      filtered = filtered.filter((ing) =>
-        ing.name.toLowerCase().includes(query)
+
+      // Check if the query matches any category
+      const matchedCategory = CATEGORIES.find(cat =>
+        cat.name.toLowerCase().includes(query)
       )
+
+      filtered = filtered.filter((ing) => {
+        const name = (ing.name || '').toLowerCase()
+        const ingredientMatches = name.includes(query)
+        const categoryMatches = matchedCategory && ing.category === matchedCategory.name
+
+        // Show ingredient if either the name matches OR it's in the matched category
+        return ingredientMatches || categoryMatches
+      })
     }
 
     return filtered
@@ -117,7 +129,7 @@ export const Dashboard = () => {
   return (
     <ChalkboardFrame>
       <div className="flex flex-col min-h-screen pb-20">
-        <MobileHeader title="Kos-Kas" />
+        <MobileHeader />
 
         <main className="flex-1 px-4 py-4">
           {/* Search bar with decorative frame */}
@@ -141,8 +153,8 @@ export const Dashboard = () => {
             </div>
           </div>
 
-          {/* Category filter - only show if search is active or category is selected */}
-          {activeTab === 'home' && (searchQuery || selectedCategory) && (
+          {/* Category filter - only show if category is selected (not when searching) */}
+          {activeTab === 'home' && selectedCategory && !searchQuery && (
             <>
               <div className="mb-4">
                 <CategoryChips

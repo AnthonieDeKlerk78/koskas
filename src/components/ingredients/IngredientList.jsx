@@ -48,7 +48,7 @@ export const IngredientList = ({ ingredients, loading, onEdit, onDelete }) => {
     return acc
   }, {})
 
-  // Show all categories from CATEGORIES constant
+  // Show all categories from CATEGORIES constant, but only render those with ingredients
   const orderedCategories = CATEGORIES.map(cat => cat.name)
 
   return (
@@ -57,6 +57,9 @@ export const IngredientList = ({ ingredients, loading, onEdit, onDelete }) => {
         const category = CATEGORIES.find(c => c.name === categoryName)
         const categoryIngredients = groupedByCategory[categoryName] || []
         const isEmpty = categoryIngredients.length === 0
+
+        // Skip empty categories
+        if (isEmpty) return null
 
         return (
           <div key={categoryName} className="slide-in">
@@ -106,25 +109,17 @@ export const IngredientList = ({ ingredients, loading, onEdit, onDelete }) => {
               </div>
             </div>
 
-            {/* Ingredients in this category or empty message */}
+            {/* Ingredients in this category */}
             <div className="flex flex-col gap-3 pl-2">
-              {isEmpty ? (
-                <div className="py-3 px-4">
-                  <p className="font-hand text-sm text-chalk-faded/50 italic">
-                    Empty
-                  </p>
+              {categoryIngredients.map((ingredient) => (
+                <div key={ingredient.id}>
+                  <IngredientCard
+                    ingredient={ingredient}
+                    onEdit={() => onEdit(ingredient)}
+                    onDelete={() => onDelete(ingredient.id)}
+                  />
                 </div>
-              ) : (
-                categoryIngredients.map((ingredient) => (
-                  <div key={ingredient.id}>
-                    <IngredientCard
-                      ingredient={ingredient}
-                      onEdit={() => onEdit(ingredient)}
-                      onDelete={() => onDelete(ingredient.id)}
-                    />
-                  </div>
-                ))
-              )}
+              ))}
             </div>
           </div>
         )

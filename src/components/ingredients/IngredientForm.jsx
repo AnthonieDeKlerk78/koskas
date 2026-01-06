@@ -105,6 +105,14 @@ export const IngredientForm = ({ ingredient, onSubmit, onCancel }) => {
               key={loc.value}
               className="flex items-center gap-2 cursor-pointer touch-highlight"
             >
+              <input
+                type="radio"
+                name="location"
+                value={loc.value}
+                checked={formData.location === loc.value}
+                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                className="sr-only"
+              />
               <div
                 className={`
                   w-5 h-5 rounded-full border-2
